@@ -31,6 +31,7 @@ ui <- (fluidPage(
       actionButton("stop", "Stop"),
       actionButton("reset", "Reset"),
       actionButton("randomize", "Randomize"),
+      actionButton("glider", "Add Glider"),
       helpText("Cliquez sur les cellules pour les activer/désactiver."),
       
     ),
@@ -93,6 +94,15 @@ update_grid <- function(grid) {
   new_grid
 }
 
+
+add_glider <- function(grid, x, y) {
+  pattern <- matrix(c(0, 1, 0, 
+                      0, 0, 1, 
+                      1, 1, 1), nrow = 3, byrow = TRUE)
+  grid[x:(x+2), y:(y+2)] <- pattern
+  grid
+}
+
 # Taille de la grille
 #grid_size <- 20
 
@@ -140,6 +150,15 @@ server <- (function(input, output, session) {
         grid(update_grid(grid()))
       })
     }
+  })
+  
+  observeEvent(input$glider, {
+    isolate({
+      new_grid <- grid()
+      size <- nrow(new_grid)
+      new_grid <- add_glider(new_grid, input$taille/2, input$taille/2) 
+      grid(new_grid)
+    })
   })
   
   
