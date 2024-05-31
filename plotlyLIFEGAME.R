@@ -32,6 +32,9 @@ ui <- (fluidPage(
       actionButton("reset", "Reset"),
       actionButton("randomize", "Randomize"),
       actionButton("glider", "Add Glider"),
+      actionButton("lwss", "Add LWSS"),
+      actionButton("mwss", "Add MWSS"),
+      actionButton("hwss", "Add HWSS"),
       helpText("Cliquez sur les cellules pour les activer/désactiver."),
       
     ),
@@ -103,6 +106,36 @@ add_glider <- function(grid, x, y) {
   grid
 }
 
+add_lwss <- function(grid, x, y) {
+  pattern <- matrix(c(0, 1, 1, 1, 1,
+                      1, 0, 0, 0, 1,
+                      0, 0, 0, 0, 1,
+                      1, 0, 0, 1, 0), nrow = 4, byrow = TRUE)
+  grid[x:(x+3), y:(y+4)] <- pattern
+  grid
+}
+
+add_mwss <- function(grid, x, y) {
+  pattern <- matrix(c(0, 1, 1, 1, 1, 1, 
+                      1, 0, 0, 0, 0, 1, 
+                      0, 0, 0, 0, 0, 1, 
+                      1, 0, 0, 0, 1, 0, 
+                      0, 0, 1, 0, 0, 0), nrow = 5, byrow = TRUE)
+  grid[x:(x+4), y:(y+5)] <- pattern
+  grid
+}
+
+add_hwss <- function(grid, x, y) {
+  pattern <- matrix(c(0, 1, 1, 1, 1, 1, 1, 
+                      1, 0, 0, 0, 0, 0, 1, 
+                      0, 0, 0, 0, 0, 0, 1, 
+                      1, 0, 0, 0, 0, 1, 0, 
+                      0, 0, 1, 1, 0, 0, 0), nrow = 5, byrow = TRUE)
+  grid[x:(x+4), y:(y+6)] <- pattern
+  grid
+}
+
+
 # Taille de la grille
 #grid_size <- 20
 
@@ -161,6 +194,32 @@ server <- (function(input, output, session) {
     })
   })
   
+  observeEvent(input$lwss, {
+    isolate({
+      new_grid <- grid()
+      size <- nrow(new_grid)
+      new_grid <- add_lwss(new_grid, input$taille/2, input$taille/2) 
+      grid(new_grid)
+    })
+  })
+  
+  observeEvent(input$mwss, {
+    isolate({
+      new_grid <- grid()
+      size <- nrow(new_grid)
+      new_grid <- add_mwss(new_grid, input$taille/2, input$taille/2) 
+      grid(new_grid)
+    })
+  })
+  
+  observeEvent(input$hwss, {
+    isolate({
+      new_grid <- grid()
+      size <- nrow(new_grid)
+      new_grid <- add_hwss(new_grid, input$taille/2, input$taille/2) 
+      grid(new_grid)
+    })
+  })
   
   observeEvent(event_data("plotly_click"), {
     click <- event_data("plotly_click")
