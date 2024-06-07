@@ -183,3 +183,51 @@ if (length(unique_matrices_4x4) > 2) {
 
 
 
+
+
+generate_matrices <- function(n, k) {
+  # Generate all combinations of indices where 1s can be placed
+  indices <- 1:(n * n)
+  combinations <- combn(indices, k)
+  
+  # Initialize a list to store the matrices
+  matrices <- list()
+  
+  # Loop through each combination to create the matrices
+  for (i in 1:ncol(combinations)) {
+    matrix <- matrix(0, n, n)
+    for (index in combinations[, i]) {
+      row <- ceiling(index / n)
+      col <- (index - 1) %% n + 1
+      matrix[row, col] <- 1
+    }
+    matrices[[i]] <- matrix
+  }
+  
+  return(matrices)
+}
+
+# Example usage for a 4x4 matrix with exactly 2 ones
+matrices <- generate_matrices(4, 2)
+
+# Print a few examples
+for (i in 1:min(5, length(matrices))) {
+  cat("Matrix", i, ":\n")
+  print(matrices[[i]])
+  cat("\n")
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
