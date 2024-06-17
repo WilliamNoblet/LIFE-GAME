@@ -83,9 +83,7 @@ update_grid <- function(grid) {
   
   for (i in 1:n) {
     for (j in 1:n) {
-      # Comptage des voisins vivants
       neighbors <- sum(grid[max(1, i-1):min(n, i+1), max(1, j-1):min(n, j+1)]) - grid[i, j]
-      
       if (grid[i, j] == 1 && (neighbors < 2 || neighbors > 3)) {
         new_grid[i, j] <- 0
       } else if (grid[i, j] == 0 && neighbors == 3) {

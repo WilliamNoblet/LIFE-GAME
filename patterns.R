@@ -1,3 +1,7 @@
+library(dplyr)
+library(ggplot2)
+library(plotly)
+
 matrix(c(0, 1, 1, 1, 1, 1, 
          1, 0, 0, 0, 0, 1, 
          0, 0, 0, 0, 0, 1, 
@@ -69,40 +73,173 @@ plot_ly(
 
 #Créer une fonction qui permet de savoir l'évolution d'un pattern
 
-size = 2
+size = 3
 
 num_combinations <- 2^(size^2)
 
-# Générer toutes les combinaisons possibles de 0 et 1
 combinations <- expand.grid(rep(list(0:1), size^2))
 
-# Convertir chaque combinaison en une matrice
 matrices <- apply(combinations, 1, function(x) {
   matrix(x, nrow = size, byrow = TRUE)
 })
 
-matrices <- t(matrices)
-
-i = 2
-
-matrix(matrices[i,], nrow = 4, byrow = T)
 
 
 
-size = 4
+size <- 3
 
+# Calcul du nombre total de combinaisons
 num_combinations <- 2^(size^2)
 
-# Générer toutes les combinaisons possibles de 0 et 1
+# Génération de toutes les combinaisons possibles de 0 et 1
 combinations <- expand.grid(rep(list(0:1), size^2))
 
-# Convertir chaque combinaison en une matrice
+# Conversion de chaque combinaison en matrice remplie par lignes
 matrices <- apply(combinations, 1, function(x) {
   matrix(x, nrow = size, byrow = TRUE)
 })
 
-matrices <- t(matrices)
+# Affichage de quelques exemples de matrices générées
+for (i in 1:5) {
+  print(matrices[[i]])
+}
 
+
+####################################################################
+size <- 3
+
+# Calcul du nombre total de combinaisons
+num_combinations <- 2^(size^2)
+
+# Génération de toutes les combinaisons possibles de 0 et 1
+combinations <- expand.grid(rep(list(0:1), size^2))                 
+####################################################################
+
+
+
+
+matrice <- matrix(matrices[,500], nrow = size, byrow = TRUE)
+matrice <- matrix(c(0, 1, 0,
+                    0, 1, 0,
+                    0, 1, 0), nrow = 3, byrow = TRUE)
+
+
+
+
+
+
+
+
+
+generate_grid <- function(n) {
+  matrix(0, n, n)
+}
+
+grid <- generate_grid(50)
+
+grid_data <- grid
+
+add_pattern <- function(pattern, grid, x, y) {
+  grid[x:(x+2), y:(y+2)] <- t(pattern)
+  grid
+}
+
+grid_data <- add_pattern(matrice, grid_data, 25, 25)
+
+plot_ly(
+  z = t(grid_data[nrow(grid_data):1, ]),
+  type = "heatmap",
+  colors = c("white", "black"),
+  showscale = FALSE
+) %>% layout(
+  xaxis = list(showticklabels = FALSE, showline = FALSE, title = ""),
+  yaxis = list(showticklabels = FALSE, showline = FALSE, title = "")
+)
+
+
+
+
+
+
+update_grid <- function(grid) {
+  n <- nrow(grid)
+  new_grid <- grid
+  
+  for (i in 1:n) {
+    for (j in 1:n) {
+      neighbors <- sum(grid[max(1, i-1):min(n, i+1), max(1, j-1):min(n, j+1)]) - grid[i, j]
+      if (grid[i, j] == 1 && (neighbors < 2 || neighbors > 3)) {
+        new_grid[i, j] <- 0
+      } else if (grid[i, j] == 0 && neighbors == 3) {
+        new_grid[i, j] <- 1
+      }
+    }
+  }
+  
+  new_grid
+}
+
+
+
+grid_data <- update_grid(grid_data)
+
+
+matrice <- matrix(c(0, 1, 0,
+                    0, 1, 0,
+                    0, 1, 0), nrow = 3, byrow = TRUE)
+
+matrice <- matrix(combinations[150,], nrow = 3, byrow = T)
+
+first_grid <- add_pattern(matrice, grid_data, 25, 25)
+
+grid_data <- first_grid
+
+
+
+
+
+
+for (i in seq(1:10)) {
+  grid_data <- update_grid(grid_data)
+  n <- 1
+  
+  if (!identical(grid_data, first_grid)) {
+    grid_data <- update_grid(grid_data)
+    n = n + 1
+  } else {
+    print(n)
+  }
+}
+
+
+for (i in seq(1:10)) {
+  grid_data <- update_grid(grid_data)
+  n <- 1
+  
+  if (!isTRUE(all.equal(grid_data, first_grid))) {
+    grid_data <- update_grid(grid_data)
+    n = n + 1
+  } else {
+    print(n)
+  }
+}
+
+
+
+
+grid_data <- update_grid(grid_data)
+
+while (!isTRUE(all.equal(grid_data, first_grid)) && !all(grid_data == 0)) {
+  grid_data <- update_grid(grid_data)
+  n <- n + 1
+}
+
+if (all(grid_data == 0)) {
+  print("Matrice nulle détectée, arrêt du programme.")
+}
+
+# Afficher la valeur de n à la fin
+print(n)
 
 
 
@@ -222,12 +359,49 @@ for (i in 1:min(5, length(matrices))) {
 
 
 
+"
+pour une matrice d'une taille 3x3, 9 points possibles
+a partir de ça on peut chercher le nombre de dessins pour des 1 parmis des 0
+formule simple pour connaitre le nombre de dessins possible
+
+0 -> 1 -> 1 
+
+1 -> 9 -> 1
+
+2 -> 36 -> 4
+
+3 -> 84 -> 
+
+4 -> 126
+
+5 -> 126
+
+6 -> 84
+
+7 -> 36
+
+8 -> 9
+
+9 -> 1
+
+"
 
 
 
+prod(1:5)
+
+n = 9
+
+combinaisons <- function(n, k){
+  result <- (prod(1:n))/(prod(1:k)*prod(1:(n-k)))
+  result
+}
+combinaisons(9,1)
 
 
-
-
-
+arrangement <- function(n, k){
+  result <- (prod(1:n))/(prod(1:(n-k)))
+  result
+}
+arrangement(9,3)
 
