@@ -49,11 +49,11 @@ grid <- generate_grid(50)
 grid_data <- grid
 
 add_pattern <- function(pattern, grid, x, y) {
-  grid[x:(x+2), y:(y+2)] <- t(pattern)
+  grid[x:(x+ncol(pattern)-1), y:(y+nrow(pattern)-1)] <- t(pattern)
   grid
 }
 
-grid_data <- add_pattern(blinker_2, grid_data, 25, 25)
+grid_data <- add_pattern(mwss, grid_data, 25, 25)
 
 plot_ly(
   z = t(grid_data[nrow(grid_data):1, ]),
@@ -68,20 +68,6 @@ plot_ly(
   xaxis = list(showticklabels = FALSE, showline = FALSE, title = ""),
   yaxis = list(showticklabels = FALSE, showline = FALSE, title = "")
 )
-
-
-
-#Créer une fonction qui permet de savoir l'évolution d'un pattern
-
-size = 3
-
-num_combinations <- 2^(size^2)
-
-combinations <- expand.grid(rep(list(0:1), size^2))
-
-matrices <- apply(combinations, 1, function(x) {
-  matrix(x, nrow = size, byrow = TRUE)
-})
 
 
 
@@ -115,19 +101,11 @@ num_combinations <- 2^(size^2)
 combinations <- expand.grid(rep(list(0:1), size^2))                 
 ####################################################################
 
+matrice <- matrix(as.vector(t(combinations[500,])), nrow = size, byrow = TRUE)
 
-
-
-matrice <- matrix(matrices[,500], nrow = size, byrow = TRUE)
 matrice <- matrix(c(0, 1, 0,
                     0, 1, 0,
                     0, 1, 0), nrow = 3, byrow = TRUE)
-
-
-
-
-
-
 
 
 
@@ -140,7 +118,7 @@ grid <- generate_grid(50)
 grid_data <- grid
 
 add_pattern <- function(pattern, grid, x, y) {
-  grid[x:(x+2), y:(y+2)] <- t(pattern)
+  grid[x:(x+ncol(pattern)-1), y:(y+nrow(pattern)-1)] <- t(pattern)
   grid
 }
 
@@ -226,10 +204,18 @@ for (i in seq(1:10)) {
 
 
 
+first_grid <- add_pattern(matrice, grid_data, 25, 25)
+
+grid_data <- first_grid
+
 
 grid_data <- update_grid(grid_data)
 
-while (!isTRUE(all.equal(grid_data, first_grid)) && !all(grid_data == 0)) {
+n = 1
+
+#Problème ici !!!!!!!!!!!!!
+
+while (!isTRUE(all.equal(grid_data, first_grid)) && !all(grid_data == 0) && n < 10) {
   grid_data <- update_grid(grid_data)
   n <- n + 1
 }
