@@ -39,7 +39,6 @@ patterns_data <- rbind(patterns_data, new_pattern)
 
 # 3 different types patterns , still lifes, oscillators, spaceships
 
-
 generate_grid <- function(n) {
   matrix(0, n, n)
 }
@@ -74,18 +73,14 @@ plot_ly(
 
 size <- 3
 
-# Calcul du nombre total de combinaisons
 num_combinations <- 2^(size^2)
 
-# Génération de toutes les combinaisons possibles de 0 et 1
 combinations <- expand.grid(rep(list(0:1), size^2))
 
-# Conversion de chaque combinaison en matrice remplie par lignes
 matrices <- apply(combinations, 1, function(x) {
   matrix(x, nrow = size, byrow = TRUE)
 })
 
-# Affichage de quelques exemples de matrices générées
 for (i in 1:5) {
   print(matrices[[i]])
 }
@@ -94,10 +89,8 @@ for (i in 1:5) {
 ####################################################################
 size <- 3
 
-# Calcul du nombre total de combinaisons
 num_combinations <- 2^(size^2)
 
-# Génération de toutes les combinaisons possibles de 0 et 1
 combinations <- expand.grid(rep(list(0:1), size^2))                 
 ####################################################################
 
@@ -223,8 +216,7 @@ while (!isTRUE(all.equal(grid_data, first_grid)) && !all(grid_data == 0) && n < 
 if (all(grid_data == 0)) {
   print("Matrice nulle détectée, arrêt du programme.")
 }
-
-# Afficher la valeur de n à la fin
+c
 print(n)
 
 
@@ -382,12 +374,12 @@ combinaisons <- function(n, k){
   result <- (prod(1:n))/(prod(1:k)*prod(1:(n-k)))
   result
 }
-combinaisons(9,1)
+combinaisons(9,3)
 
 
 arrangement <- function(n, k){
   result <- (prod(1:n))/(prod(1:(n-k)))
   result
 }
-arrangement(9,3)
+arrangement(9,4)
 
