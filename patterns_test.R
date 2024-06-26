@@ -348,11 +348,20 @@ results <- data.frame(matrice = I(apply(combinations, 1, function(x) list(matrix
 # Fonction de mise à jour de la grille (doit être définie en fonction de votre contexte)
 # update_grid <- function(grid) { ... }
 
+combinations <- combinations %>%
+  dplyr::mutate(type = '',
+                n = 0)
+
+combinations[2,1:9]
+
+
+matrice <- matrix(as.vector(t(combinations[512,])), nrow = size, byrow = TRUE)
+
 # Boucle principale pour chaque matrice dans 'results'
-for (i in seq_len(nrow(results))) {
-  grid_data <- results$matrice[[i]]
+for (i in seq_len(nrow(combinations))) {
   
-  grid_data <- add_pattern(matrix(results$matrice[[i]], nrow = 3, byrow = TRUE), grid, 25, 25)
+  grid_data <- add_pattern(matrix(as.vector(t(combinations[i,1:9])), nrow = 3, byrow = TRUE), grid, 25, 25)
+  
   n <- 1
   max_iterations <- 10
   type <- 'st'
@@ -373,7 +382,7 @@ for (i in seq_len(nrow(results))) {
     }
     
     # Condition 3: contains_matrix(grid_data, matrice)
-    if (contains_matrix(grid_data, matrix(c(0, 0, 0, 0, 1, 0, 0, 1, 0), nrow = 3, byrow = TRUE))) {
+    if (contains_matrix(grid_data, matrix(as.vector(t(combinations[i,1:9])), nrow = 3, byrow = TRUE))) {
       type <- 'spaceships'
       break
     }
@@ -382,15 +391,21 @@ for (i in seq_len(nrow(results))) {
   }
   
   # Mettre à jour les résultats
-  results$type[i] <- type
-  results$n[i] <- n
+  combinations$type[i] <- type
+  combinations$n[i] <- n
 }
 
 # Afficher les résultats
-print(results)
+print(combinations)
+
+combinations %>% dplyr::group_by(type) %>% dplyr::summarise(n = n(), .groups = 'drop')
 
 
 
+
+library(openxlsx)
+
+write.xlsx(combinations, 'C:/Users/William/Desktop/LIFE-GAME/patterns.xlsx')
 
 
 
