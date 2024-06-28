@@ -1,0 +1,82 @@
+
+
+différentes structures:
+
+structures stables:
+cellule ayant stoppé toute évolution 
+n+1 = n = n-1
+
+structure oscillateurs:
+cellule revêtant plusieurs formes différentes avant de retrouver leur état initial
+n = n + x != n + 1
+
+structures vaisseaux:
+cellule qui produit une copie d'elle même mais à un endroit différent
+3 types (voir plus précisément)
+
+structures mathusalmes
+structure qui prend un certain temps pour ce stabiliser
+(voir plus précisément)
+
+structures puffeurs:
+structure qui se déplace en laissant derrière une trainée constituées de débris
+
+structures canons:
+structure émettant un vaisseau à intervalle régulier
+
+structures jardin d'eden:
+structure sans passé possible (Comment faire?)
+
+
+
+Stable Structures
+Flowering Departure
+Stable structures (still lifes) are cell clusters that have stopped evolving: they are in a stationary state and no longer change unless a disruptive element appears nearby. A block of four cells is the smallest possible stable structure.
+
+Some figures stabilize into floral structures after a series of iterations, akin to blooming.
+
+Oscillators
+Frog
+Oscillators transform cyclically, taking on several different forms before returning to their initial state. There are numerous figures of this type, with hundreds currently known. The "frog" is a structure that repeats every two generations.
+
+They can appear relatively easily in the game universe through the spontaneous evolution of much simpler "seeds."
+
+Spaceships
+Glider
+Spaceships (or vessels) are structures capable of producing a copy of themselves, offset in the game universe, after a certain number of generations.
+
+The movement of a spaceship that returns to its initial configuration after n steps, displaced by A cells horizontally and B cells vertically, is denoted as A-B, and its speed is (A, B)c/n, where c represents the "speed of light" in the Game of Life, which is the maximum speed of a cell per generation. The existence of A - B type spaceships for arbitrary A and B has been demonstrated [citation needed]. They are categorized into:
+
+Transversal (or orthogonal) spaceships, where A = 0 or B = 0;
+Diagonal spaceships, with A = ± B;
+Oblique spaceships, where A ≠ ± B, also called knightships.
+The first oblique spaceship, called Gemini, was discovered by Andrew J. Wade in 2010. It moves 5,120 cells vertically and 1,024 cells horizontally every 33,699,586 generations. Variants exist with different speeds and periods. It is also a universal constructor.
+
+It has also been proven that an A - B type spaceship must have a period N ≥ 2(A+B), meaning the maximum speed for a diagonal spaceship is (1, 1)c/4, and for an orthogonal (horizontal) spaceship, it is (2, 0)c/4 = (1, 0)c/2.
+
+Spaceships of any desired size and period can be constructed using series of components [citation needed]. The glider is the smallest spaceship in the Game of Life, possessing the highest speed for a diagonal spaceship.
+
+Methuselahs
+Methuselahs are active structures that take a long time to stabilize. Some, like "rabbits," take over 15,000 generations to stabilize into a more or less significant number of various debris.
+
+Puffers
+Puffers are configurations that move while leaving a trail of debris behind them.
+
+Guns
+First Discovered Gun
+Guns are configurations that emit another pattern, such as a spaceship, at regular intervals. These spaceships continue to move across the game grid. The periodicity of guns, or the interval after which they repeat their behavior, can vary. Here are some details about different types of guns:
+
+Glider Gun: The most famous is the Gosper glider gun, which produces a glider every 30 generations. It was discovered by Bill Gosper in 1970 and was the first known structure with infinite growth.
+Other Guns: There are other guns that produce spaceships or other patterns at different intervals. Some can do this every 15, 23, 60, 120, 240 generations, etc. The period depends on the complexity of the gun's structure.
+Pseudo-random Guns: There are also guns that produce spaceships in a pseudo-random manner. These structures are not entirely unpredictable but have underlying complex rules that make it difficult to precisely predict when a spaceship will be emitted.
+The variation in the periods of guns is often exploited by enthusiasts to build calculators or other complex structures within the Game of Life universe.
+
+Such structures can be created from puffers that are modified so that the debris arrange themselves into spaceships. The first discovered gun emits a glider every thirty generations.
+
+Gardens of Eden
+First Garden of Eden Found in 1971 by Banks, Beeler, and Schroeppel
+A Garden of Eden is a configuration with no possible past: no configuration can lead to a Garden of Eden in the next step.
+
+The mathematical proof is based on combinatorics and is detailed in "Winning Ways for your Mathematical Plays," a book published in 1982 by Berlekamp, Conway, and Guy.
+
+
