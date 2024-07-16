@@ -65,6 +65,17 @@ contains_matrix <- function(grid, pattern) {
   }
   return(FALSE)
 }
+####################################################################
+
+
+detection_repet <- function(grid_data, history_grid) {
+  for (prev_grid in history_grid) {
+    if (identical(grid_data, prev_grid)) {
+      return(TRUE)
+    }
+  }
+  return(FALSE)
+}
 
 ####################################################################
 
@@ -103,118 +114,33 @@ n
 ####################################################################
 
 
-detection_repet <- function(grid_data, history_grid) {
-  for (prev_grid in history_grid) {
-    if (identical(grid_data, prev_grid)) {
-      return(TRUE)
-    }
-  }
-  return(FALSE)
-}
-
-####################################################################
-
-glider <- matrix(c(0, 1, 0, 
-                   0, 0, 1, 
-                   1, 1, 1), nrow = 3, byrow = TRUE)
-
-matrice = glider
-
-#matrice = matrix(as.vector(t(combinations[56,1:9])), nrow = 3, byrow = TRUE)
-
-grid_data <- add_pattern(t(matrice), grid, 25, 25)
-
-n <- 0
-
-result <- ''
-
-history_grid <- list()
-
-repeat {
-  
-  
-  
-  first_grid <- grid_data
-  
-  previous_grid <- grid_data
-  grid_data  <- update_grid(grid_data)
-  n <- n + 1
-  
-
-  history_grid <- c(history_grid, list(previous_grid))
-  
-  
-  if (all(grid_data == 0) & !identical(grid_data, previous_grid) & !detection_repet(grid_data, history_grid) & !contains_matrix(grid_data, matrice)) {
-    result <- 'null'
-    break
-  } else if (!all(grid_data == 0) & identical(grid_data, previous_grid) & !detection_repet(grid_data, history_grid) & !contains_matrix(grid_data, matrice)) {
-    result <- 'stable'
-    break
-  } else if (!all(grid_data == 0) & !identical(grid_data, previous_grid) & detection_repet(grid_data, history_grid) & !contains_matrix(grid_data, matrice)) {
-    result <- 'oscillator'
-    break
-  } else if (!all(grid_data == 0) & !identical(grid_data, previous_grid) & !detection_repet(grid_data, history_grid) & contains_matrix(grid_data, matrice)) {
-    result <- 'spaceship'
-    break
-  } else if (n > 50) {
-    break
-  }
-  
-}
-
-result
-
-n
-
-####################################################################
-
-for (i in seq_len(nrow(combinations))) {
-  
-  #grid_data <- add_pattern(matrix(as.vector(t(combinations[i,1:9])), nrow = 3, byrow = TRUE), grid, 25, 25)
-  matrice <- matrix(unlist(combinations[i,1:9]), nrow = 3, byrow = TRUE)
-  
-  grid_data <- add_pattern(t(matrice), grid, 25, 25)
-  
-  first_grid <- grid_data
-  
-  n <- 0
-  type <- 'null'
-  
-  repeat {
-    previous_grid <- grid_data
-    grid_data  <- update_grid(grid_data)
-    n <- n + 1
-    
-    
-    history_grid <- c(history_grid, list(previous_grid))
-    
-    
-    if (all(grid_data == 0) & !identical(grid_data, previous_grid) & !detection_repet(grid_data, history_grid) & !contains_matrix(grid_data, matrice)) {
-      result <- 'null'
-      break
-    } else if (!all(grid_data == 0) & identical(grid_data, previous_grid) & !detection_repet(grid_data, history_grid) & !contains_matrix(grid_data, matrice)) {
-      result <- 'stable'
-      break
-    } else if (!all(grid_data == 0) & !identical(grid_data, previous_grid) & detection_repet(grid_data, history_grid) & !contains_matrix(grid_data, matrice)) {
-      result <- 'oscillator'
-      break
-    } else if (!all(grid_data == 0) & !identical(grid_data, previous_grid) & !detection_repet(grid_data, history_grid) & contains_matrix(grid_data, matrice)) {
-      result <- 'spaceship'
-      break
-    } else if (n > 10) {
-      break
-    }
-    
-  }
-  
-  # Mettre à jour les résultats
-  combinations$type[i] <- result
-  combinations$n[i] <- n
-}
-
-
-combinations %>% dplyr::group_by(type) %>% dplyr::summarise(n = n(), .groups = 'drop')
-
+plot_ly(
+  z = t(grid_data[nrow(grid_data):1, ]),
+  type = "heatmap",
+  colors = c("white", "black"),
+  showscale = FALSE
+) %>% layout(
+  #yaxis = list(
+  #  scaleanchor = "x",
+  #  scaleratio = 1
+  #),
+  xaxis = list(showticklabels = FALSE, showline = FALSE, title = ""),
+  yaxis = list(showticklabels = FALSE, showline = FALSE, title = "")
+) %>%
+  layout(
+    annotations = list(
+      x = 0.5,
+      y = -0.15,
+      xref = 'paper',
+      yref = 'paper',
+      text = paste('n :', n),
+      showarrow = FALSE,
+      xanchor = 'center',
+      yanchor = 'bottom',
+      font = list(size = 12)
+    ),
+    margin = list(b = 100) # Ajuste la marge inférieure si nécessaire
+  )
 
 ####################################################################
 
@@ -225,6 +151,8 @@ for (i in seq_len(nrow(combinations))) {
   grid_data <- add_pattern(t(matrice), grid, 25, 25)
   
   first_grid <- grid_data
+  
+  history_grid <- list()
   
   n <- 0
   type <- 'null'
@@ -250,7 +178,7 @@ for (i in seq_len(nrow(combinations))) {
     } else if (contains_matrix(grid_data, matrice) & !detection_repet(grid_data, history_grid)) {
       type <- 'spaceship'
       break
-    } else if (n > 10) {
+    } else if (n > 50) {
       break
     }
     

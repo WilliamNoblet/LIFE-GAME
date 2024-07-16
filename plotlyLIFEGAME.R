@@ -50,7 +50,7 @@ ui <- (fluidPage(
         
         sliderInput("sec",
                     "Secondes:",
-                    min = 200,
+                    min = 10,
                     max = 5000,
                     value = 1000)
       ),
@@ -133,6 +133,9 @@ add_hwss <- function(grid, x, y) {
   grid
 }
 
+count_black_columns <- function(grid) {
+  sum(apply(grid, 2, function(col) all(col == 1)))
+}
 
 # Taille de la grille
 #grid_size <- 20
@@ -146,6 +149,8 @@ server <- (function(input, output, session) {
   grid <- reactiveVal(generate_grid(n = 50))
   
   running <- reactiveVal(FALSE)
+  n_tour <- reactiveVal(0)
+  n_black_columns <- reactiveVal(0) 
   
   # Observer le bouton Start
   observeEvent(input$start, {
@@ -160,11 +165,15 @@ server <- (function(input, output, session) {
   observeEvent(input$reset, {
     running(FALSE)
     grid(generate_grid(input$taille))
+    n_tour(0) 
+    n_black_columns(0) 
   })
   
   observeEvent(input$randomize, {
     running(FALSE)
     grid(random_grid(input$taille))
+    n_tour(0) 
+    n_black_columns(0) 
   })
   
   
@@ -179,6 +188,8 @@ server <- (function(input, output, session) {
         #grid <- reactiveVal(generate_grid(n))
         
         grid(update_grid(grid()))
+        n_tour(n_tour() + 1)
+        n_black_columns(count_black_columns(grid()))
       })
     }
   })
@@ -189,6 +200,7 @@ server <- (function(input, output, session) {
       size <- nrow(new_grid)
       new_grid <- add_glider(new_grid, input$taille/2, input$taille/2) 
       grid(new_grid)
+      n_black_columns(count_black_columns(new_grid))
     })
   })
   
@@ -198,6 +210,7 @@ server <- (function(input, output, session) {
       size <- nrow(new_grid)
       new_grid <- add_lwss(new_grid, input$taille/2, input$taille/2) 
       grid(new_grid)
+      n_black_columns(count_black_columns(new_grid))
     })
   })
   
@@ -207,6 +220,7 @@ server <- (function(input, output, session) {
       size <- nrow(new_grid)
       new_grid <- add_mwss(new_grid, input$taille/2, input$taille/2) 
       grid(new_grid)
+      n_black_columns(count_black_columns(new_grid))
     })
   })
   
@@ -216,6 +230,7 @@ server <- (function(input, output, session) {
       size <- nrow(new_grid)
       new_grid <- add_hwss(new_grid, input$taille/2, input$taille/2) 
       grid(new_grid)
+      n_black_columns(count_black_columns(new_grid))
     })
   })
   
@@ -228,6 +243,7 @@ server <- (function(input, output, session) {
       new_grid <- grid()
       new_grid[i, j] <- 1 - new_grid[i, j]
       grid(new_grid)
+      n_black_columns(count_black_columns(new_grid))
     }
   })
   
@@ -238,6 +254,9 @@ server <- (function(input, output, session) {
     #grid <- reactiveVal(generate_grid(n))
     
     grid_data <- grid()
+    n_tours <- n_tour() 
+    n_black_cols <- n_black_columns() 
+    
     plot_ly(
       z = t(grid_data[nrow(grid_data):1, ]),
       type = "heatmap",
@@ -250,7 +269,21 @@ server <- (function(input, output, session) {
       #),
       xaxis = list(showticklabels = FALSE, showline = FALSE, title = ""),
       yaxis = list(showticklabels = FALSE, showline = FALSE, title = "")
-    )
+    ) %>%
+      layout(
+        annotations = list(
+          x = 0.5,
+          y = -0.15,
+          xref = 'paper',
+          yref = 'paper',
+          text = paste('Nombre de tours:', n_tours, ' | Colonnes noires:', n_black_cols),
+          showarrow = FALSE,
+          xanchor = 'center',
+          yanchor = 'bottom',
+          font = list(size = 12)
+        ),
+        margin = list(b = 100)
+      )
   })
 })
 
